@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <fileVersion>4</fileVersion>
+    <fileChecksum>758514032</fileChecksum>
+    <configuration>
+        <name>Debug</name>
+        <outputs />
+        <forcedrebuild>
+            <name>[MULTI_TOOL]</name>
+            <tool>XLINK</tool>
+        </forcedrebuild>
+    </configuration>
+    <configuration>
+        <name>Release</name>
+        <outputs>
+            <file>$PROJ_DIR$\Release\Obj\misc.r90</file>
+            <file>$PROJ_DIR$\Src\hard.h</file>
+            <file>$PROJ_DIR$\Release\Obj\misc.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\ioavr.h</file>
+            <file>$PROJ_DIR$\Release\Obj\hard.xcl</file>
+            <file>$PROJ_DIR$\Release\Obj\main.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\iotiny85.h</file>
+            <file>$TOOLKIT_DIR$\src\template\cfgtiny85.xcl</file>
+            <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+            <file>$PROJ_DIR$\Release\Obj\hard.r90</file>
+            <file>$PROJ_DIR$\Release\Obj\LiPo_V7M.pbd</file>
+            <file>$PROJ_DIR$\Release\List\main.lst</file>
+            <file>$PROJ_DIR$\Release\Exe\LiPo_V7M.hex</file>
+            <file>$TOOLKIT_DIR$\inc\iomacro.h</file>
+            <file>$PROJ_DIR$\Src\misc.h</file>
+            <file>$TOOLKIT_DIR$\lib\clib\cl1s-ec_nomul.r90</file>
+            <file>$PROJ_DIR$\Release\List\hard.lst</file>
+            <file>$TOOLKIT_DIR$\src\template\cfg1soim.xcl</file>
+            <file>$PROJ_DIR$\Release\Exe\LiPo_V7M.bin</file>
+            <file>$PROJ_DIR$\Release\List\LiPo_V7M.html</file>
+            <file>$PROJ_DIR$\Release\List\misc.lst</file>
+            <file>$PROJ_DIR$\Src\misc.c</file>
+            <file>$TOOLKIT_DIR$\inc\bitdefinitions\iotiny85.inc</file>
+            <file>$PROJ_DIR$\Release\Obj\main.r90</file>
+            <file>$PROJ_DIR$\Src\hard.c</file>
+            <file>$PROJ_DIR$\Src\main.c</file>
+        </outputs>
+        <file>
+            <name>[ROOT_NODE]</name>
+            <outputs>
+                <tool>
+                    <name>XLINK</name>
+                    <file> 12 19 18</file>
+                </tool>
+            </outputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Release\Exe\LiPo_V7M.hex</name>
+            <outputs>
+                <tool>
+                    <name>XLINK</name>
+                    <file> 19 18</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>XLINK</name>
+                    <file> 7 17 9 23 0 15</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Src\misc.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCAVR</name>
+                    <file> 20 0</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 2</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCAVR</name>
+                    <file> 1 3 6 13 22 14</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Src\hard.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCAVR</name>
+                    <file> 16 9</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 4</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCAVR</name>
+                    <file> 1 3 6 13 22 8</file>
+                </tool>
+            </inputs>
+        </file>
+        <file>
+            <name>$PROJ_DIR$\Src\main.c</name>
+            <outputs>
+                <tool>
+                    <name>ICCAVR</name>
+                    <file> 11 23</file>
+                </tool>
+                <tool>
+                    <name>BICOMP</name>
+                    <file> 5</file>
+                </tool>
+            </outputs>
+            <inputs>
+                <tool>
+                    <name>ICCAVR</name>
+                    <file> 1 3 6 13 22 14</file>
+                </tool>
+            </inputs>
+        </file>
+    </configuration>
+</project>
