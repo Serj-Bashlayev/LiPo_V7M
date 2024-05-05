@@ -46,7 +46,7 @@ __interrupt void timer0_isr(void)
   Timer++;
   if (WaitCount)
     WaitCount--;
-  if (!KEY_NOT_PRESSED())
+  if (KEY_PRESSED())
     KEY_PRESSED_ISR = 1;
 }
 

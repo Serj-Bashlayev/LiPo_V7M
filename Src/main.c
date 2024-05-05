@@ -27,14 +27,10 @@ typedef enum {
 } KEY_STATE_TD;
 
 KEY_STATE_TD KeyState;
-
-///unsigned char ModeOnOff;
-///unsigned char Line1Mode,Line2Mode,Line3Mode;
-///unsigned char Mode;
-STATE_TD ModeOnOff;
-BRIGHT_TD Line1_Bright,Line2_Bright,Line3_Bright;
-BRIGHT_TD Bright;
-unsigned char BlockPwOn;
+STATE_TD ModeOnOff;     // режим
+BRIGHT_TD Line1_Bright,Line2_Bright,Line3_Bright; // €ркость режима
+BRIGHT_TD Bright;       // текуща€ €ркость
+unsigned char BlockPwOn;// включение фонарика заблокировано
 
 // режим ма€чка
 //  период мигани€ 10, 4 или 1 сек
@@ -153,7 +149,7 @@ void DblLongPress(void)
     KeyState = KEY_WAIT_UNPRESS;
     OutBattaryVoltage();
     ClearTimer();
-    while (!KEY_NOT_PRESSED())
+    while (KEY_PRESSED())
     {
       if (GetTimer() > 6000) {
         CalibrationTemp();
@@ -244,13 +240,11 @@ void main(void)
   Delay(20);
   while (1)
   {
-    Key = 1;
-    if (KEY_NOT_PRESSED())
-      Key = 0;
+    Key = KEY_PRESSED() ? 1 : 0;
 
     switch (KeyState) {
     case KEY_WAIT_UNPRESS:
-      if (KEY_NOT_PRESSED())
+      if (!KEY_PRESSED())
         KeyState = KEY_UNPRESS;
       break;
     case KEY_UNPRESS:
@@ -359,7 +353,7 @@ void main(void)
       LedOff();
       ModeOnOff = STATE_PW_OFF;
       KeyState = KEY_UNPRESS;
-      while (!KEY_NOT_PRESSED())
+      while (KEY_PRESSED())
         Wait30ms();
       Wait30ms();
       PowerOff();

@@ -101,12 +101,12 @@ void CalibrationTemp(void)
   TempOff.s = TEMP_DEF_SET;
   WriteCfgByte(CFG_ADRESS_TEMP, (unsigned char)(TempOff.s - 200));
   LedOnFast(BRIGHT_UHI);
-  while (!KEY_NOT_PRESSED());
+  while (KEY_PRESSED());
   Delay(500);
-  while (KEY_NOT_PRESSED());
+  while (!KEY_PRESSED());
   LedOff();
   Delay(200);
-  while (!KEY_NOT_PRESSED())
+  while (KEY_PRESSED())
   {
     if (GetTimer() > 2000) {
       TempOff.s = GetTemp();
@@ -165,8 +165,8 @@ void BatTest(void)
 }
 
 /*
-  1. Отключение фонаря при температуре > (заданная + 10)
-  2. Снижение яркости с 2000мА до 600мА при температуре > заданная
+  1. при температуре > (заданная + 10) - Отключение фонаря 
+  2. при температуре > заданная - снижение яркости с 2000мА до 600мА 
   (10 измереий подряд)
 */
 void TempTest(void)

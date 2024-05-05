@@ -65,7 +65,7 @@ void LedOnSlow(BRIGHT_TD mode);
 void LedOff(void);
 void LedSysBlink(void);
 
-#define KEY_NOT_PRESSED() (PINB & 0x08)
+#define KEY_PRESSED() ((PINB & 0x08) == 0)
 #define KEY_PRESSED_ISR  GPIOR0_Bit0
 
 unsigned short GetTemp(void);
