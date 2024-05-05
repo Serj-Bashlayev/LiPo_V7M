@@ -220,7 +220,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>7.20.1.1511</state>
+                    <state>7.30.4.1668</state>
                 </option>
             </data>
         </settings>
@@ -2098,6 +2098,9 @@
     </configuration>
     <file>
         <name>$PROJ_DIR$\Src\hard.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\Src\key.c</name>
     </file>
     <file>
         <name>$PROJ_DIR$\Src\main.c</name>
