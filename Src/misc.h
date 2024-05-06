@@ -18,14 +18,14 @@
 
 typedef enum
 {
-  STATE_PW_OFF = 0, // выключен
-  STATE_SHORT_ON,   // включен коротким нажатием
-  STATE_LONG_ON,    // включен нажатием с удержанием 0.8 сек
-  STATE_DBLCLK_ON,  // включен двойным нажатием
-  STATE_DO_PW_OFF   // выключение
-} STATE_TD;
+  MODE_PW_OFF = 0,  // выключен
+  MODE_1,           // включен кликом
+  MODE_2,           // включен удержанием
+  MODE_3,           // включен двойным кликом
+  MODE_DO_PW_OFF    // выключение
+} MODE_TD;
 
-extern STATE_TD ModeOnOff;
+extern MODE_TD Mode;
 
 unsigned char ReadCfgByte(unsigned char adress, unsigned char *byte);
 void WriteCfgByte(unsigned char adress, unsigned char byte);

@@ -11,7 +11,7 @@
 
 //extern unsigned char Line1Mode,Line2Mode,Line3Mode;
 //extern unsigned char Mode;
-extern BRIGHT_TD Line1_Bright,Line2_Bright,Line3_Bright;;
+extern BRIGHT_TD Mode1_Bright,Mode2_Bright,Mode3_Bright;;
 extern BRIGHT_TD Bright;
 
 unsigned char TempCount;
@@ -56,12 +56,12 @@ void WriteCfgByte(unsigned char adress, unsigned char byte)
 
 void LoadCfg(void)
 {
-  if (ReadCfgByte(CFG_ADRESS_MODE1, (unsigned char*)&Line1_Bright))
-    Line1_Bright = BRIGHT_MID;
-  if (ReadCfgByte(CFG_ADRESS_MODE2, (unsigned char*)&Line2_Bright))
-    Line2_Bright = BRIGHT_ULOW2;
-  if (ReadCfgByte(CFG_ADRESS_MODE3, (unsigned char*)&Line3_Bright))
-    Line3_Bright = BRIGHT_UHI;
+  if (ReadCfgByte(CFG_ADRESS_MODE1, (unsigned char*)&Mode1_Bright))
+    Mode1_Bright = BRIGHT_MID;
+  if (ReadCfgByte(CFG_ADRESS_MODE2, (unsigned char*)&Mode2_Bright))
+    Mode2_Bright = BRIGHT_ULOW2;
+  if (ReadCfgByte(CFG_ADRESS_MODE3, (unsigned char*)&Mode3_Bright))
+    Mode3_Bright = BRIGHT_UHI;
   if (ReadCfgByte(CFG_ADRESS_TEMP, &(TempOff.c[0]))) {
     TempOff.s = TEMP_DEF_SET;
   }
@@ -139,7 +139,7 @@ void BatTest(void)
 {
   unsigned short vdown;
 
-  if (ModeOnOff == STATE_LONG_ON) {
+  if (Mode == MODE_2) {
     vdown = VModeDownE[Bright];
   }
   else {
@@ -150,7 +150,7 @@ void BatTest(void)
     BatCount++;
     if (BatCount > 10) {
       if (Bright >= BRIGHT_ULOW2) {
-        ModeOnOff = STATE_DO_PW_OFF;
+        Mode = MODE_DO_PW_OFF;
       }
       else {
         Bright++;
@@ -176,7 +176,7 @@ void TempTest(void)
   TempCount++;
   if (temp > TempOff.s + 10) {
     if (TempCount > 10) {
-      ModeOnOff = STATE_DO_PW_OFF;
+      Mode = MODE_DO_PW_OFF;
     }
     return;
   }
