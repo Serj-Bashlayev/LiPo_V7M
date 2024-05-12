@@ -1,15 +1,20 @@
 //===========================================================================
 // FILE:        key.c
-// DESCRIPTION: Обработка состояний нажатия кнопки. 
-// 
+// DESCRIPTION: Обработка состояний нажатия кнопки
+//
 // AUTHOR:      Serj Balabay
-// VERSION:     0.1
+// VERSION:     0.3
 // DATE:        05/05/2024
-// 
-// LAST MODIFICATION : Serj Balabay (05.05.2024)
+//
+// LAST MODIFICATION : Serj Balabay (12.05.2024)
 // HISTORY:
-// v0.1 - создан
-// 
+// 05.05.2024 (v0.1):
+//     - Initial release
+// 06.05.2024 (v0.2):
+//     - Added Key_Reset_SM() 
+// 12.05.2024 (v0.3):
+//     - Added Key_Set_RELEASE()
+//
 //===========================================================================
 
 #include "hard.h"
@@ -19,9 +24,16 @@
 static unsigned char counter;
 static S_TD          state;
 
-void Key_Reset_SM(void) 
+void Key_Reset_SM(void)
 {
   state = S_UNPRESS;
+  counter = 0;
+}
+
+void Key_Set_RELEASE(void)
+{
+  state = S_RELEASE;
+  ClearTimer();
   counter = 0;
 }
 
