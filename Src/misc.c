@@ -9,8 +9,6 @@
 #include "hard.h"
 #include "misc.h"
 
-//extern unsigned char Line1Mode,Line2Mode,Line3Mode;
-//extern unsigned char Mode;
 extern BRIGHT_TD Mode1_Bright,Mode2_Bright,Mode3_Bright;;
 extern BRIGHT_TD Bright;
 
@@ -126,7 +124,7 @@ __flash unsigned short VModeDown[] = {
   BAT_CALC(2.85 - BAT_SHOTTKY),
   BAT_CALC(2.75 - BAT_SHOTTKY) };
 
-// если включен с удержанием 0.8 сек
+// если включен удержанием
 __flash unsigned short VModeDownE[] = {
   BAT_CALC(3.50 - BAT_SHOTTKY),
   BAT_CALC(3.45 - BAT_SHOTTKY),

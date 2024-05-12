@@ -3,7 +3,7 @@
 // DESCRIPTION:
 //
 // AUTHOR:      AVSel
-// VERSION:     7.2m
+// VERSION:     7.3m
 // DATE:        03.05.2014
 //
 // LAST MODIFICATION : Serj Balabay (06.05.2024)
@@ -13,7 +13,9 @@
 // 7.2m - (06.05.2024) јнализ состо€ни€ нажатий кнопок вынесен в отделный файл.
 //                     »ндикаци€ уровн€ аккумул€тора перенесена на тройной клик.
 //                     ѕереименование некоторых переменных.
-// 
+// 7.3m - (06.05.2024) ¬ключение коротким нажатием на той-же €ркости, на которой выключили.
+//                     ѕосле включени€ длительным удержанием ждЄм отпускани€ кнопки (не даЄм увеличивает €ркость).
+//
 //===========================================================================
 
 #include "hard.h"
@@ -72,14 +74,17 @@ void Click(void)
   if (Mode == MODE_DO_PW_OFF)
     return;
 
-  // TODO: check end remove 
-  // KeyState = KEY_WAIT_UNPRESS;
   if (Mode == MODE_PW_OFF) {
     Mode = MODE_1;
     Bright = Mode1_Bright;
     LedOnSlow(Bright);
   }
   else {
+    if (Mode == MODE_1) {
+      // ¬ первом режиме:
+      // включение коротким нажатием на той-же €ркости, на которой выключили
+      Mode1_Bright = Bright;
+    }
     Mode = MODE_DO_PW_OFF;
   }
 }
@@ -95,6 +100,7 @@ void LongPress(void)
     return;
 
   if (Mode == MODE_PW_OFF) {
+    Key_Set_RELEASE();
     Mode = MODE_2;
     Bright = Mode2_Bright;
     LedOnSlow(Bright);
@@ -117,7 +123,6 @@ void Click_2(void)
   if (Mode == MODE_DO_PW_OFF)
     return;
 
-  //KeyState = KEY_WAIT_UNPRESS;
   if (Mode == MODE_PW_OFF) {
     Mode = MODE_3;
     Bright = Mode3_Bright;
@@ -141,7 +146,6 @@ void Click_3(void)
   if (Mode == MODE_DO_PW_OFF)
     return;
 
-  //KeyState = KEY_WAIT_UNPRESS;
   if (Mode == MODE_PW_OFF) {
     OutBattaryVoltage();
   }
@@ -156,7 +160,6 @@ void Click_3(void)
 // PW_ON:  сохранение текущей €ркости в EEPROM
 void Click_4(void)
 {
-  //KeyState = KEY_WAIT_UNPRESS;
   switch (Mode) {
   case MODE_PW_OFF:
     // блокировка/разблокировка включени€ фонарика
@@ -205,7 +208,6 @@ void DblLongPress(void)
     return;
 
   if (Mode == MODE_PW_OFF) {
-    //KeyState = KEY_WAIT_UNPRESS;
     ClearTimer();
     while (KEY_PRESSED())
     {
