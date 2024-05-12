@@ -4,7 +4,7 @@
 //
 // AUTHOR:      Serj Balabay
 // VERSION:     0.3
-// DATE:        05/05/2024
+// DATE:        05.05.2024
 //
 // LAST MODIFICATION : Serj Balabay (12.05.2024)
 // HISTORY:
@@ -37,7 +37,7 @@ void Key_Set_RELEASE(void)
   counter = 0;
 }
 
-KEY_STATE_NEW_TD Key_State(void)
+KEY_STATE_TD Key_State(void)
 {
   unsigned char        key;
 
@@ -122,7 +122,7 @@ KEY_STATE_NEW_TD Key_State(void)
     break;
   }
 
-  return((KEY_STATE_NEW_TD){state, counter});
+  return((KEY_STATE_TD){state, counter});
 }
 
 
