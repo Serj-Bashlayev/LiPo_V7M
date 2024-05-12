@@ -68,11 +68,13 @@ void LoadCfg(void)
   }
 }
 
+// Пороги отображения напряжения аккумулятора (1..5 вспышек)
 __flash unsigned short BatVolt[] = {
-  BAT_CALC(3.40),
-  BAT_CALC(3.65),
-  BAT_CALC(3.85),
-  BAT_CALC(4.05) };
+  BAT_CALC(3.40 - BAT_SHOTTKY),
+  BAT_CALC(3.65 - BAT_SHOTTKY),
+  BAT_CALC(3.85 - BAT_SHOTTKY),
+  BAT_CALC(4.05 - BAT_SHOTTKY)
+};
 
 void OutBattaryVoltage(void)
 {
@@ -116,23 +118,30 @@ void CalibrationTemp(void)
   LedSysBlink();
 }
 
+// снижение яркости при разряде аккумулятора
 __flash unsigned short VModeDown[] = {
-  BAT_CALC(3.20 - BAT_SHOTTKY),
-  BAT_CALC(3.18 - BAT_SHOTTKY),
-  BAT_CALC(3.12 - BAT_SHOTTKY),
-  BAT_CALC(3.00 - BAT_SHOTTKY),
+  BAT_CALC(2.75 - BAT_SHOTTKY),
   BAT_CALC(2.85 - BAT_SHOTTKY),
-  BAT_CALC(2.75 - BAT_SHOTTKY) };
-
-// если включен удержанием
-__flash unsigned short VModeDownE[] = {
-  BAT_CALC(3.50 - BAT_SHOTTKY),
-  BAT_CALC(3.45 - BAT_SHOTTKY),
-  BAT_CALC(3.30 - BAT_SHOTTKY),
-  BAT_CALC(3.15 - BAT_SHOTTKY),
   BAT_CALC(3.00 - BAT_SHOTTKY),
-  BAT_CALC(2.75 - BAT_SHOTTKY) };
+  BAT_CALC(3.12 - BAT_SHOTTKY),
+  BAT_CALC(3.18 - BAT_SHOTTKY),
+  BAT_CALC(3.20 - BAT_SHOTTKY)
+};
 
+// если MODE_2 (включен удержанием) - 
+// "экономный" режим снижения яркости при разряде аккумулятора
+__flash unsigned short VModeDownE[] = {
+  BAT_CALC(2.75 - BAT_SHOTTKY),
+  BAT_CALC(3.00 - BAT_SHOTTKY),
+  BAT_CALC(3.15 - BAT_SHOTTKY),
+  BAT_CALC(3.30 - BAT_SHOTTKY),
+  BAT_CALC(3.45 - BAT_SHOTTKY),
+  BAT_CALC(3.50 - BAT_SHOTTKY)
+};
+
+/*
+  Уменьшение яркости в зависимости от напряжения аккумулятора
+*/
 void BatTest(void)
 {
   unsigned short vdown;
@@ -147,11 +156,11 @@ void BatTest(void)
   if (GetBat() < vdown) {
     BatCount++;
     if (BatCount > 10) {
-      if (Bright >= BRIGHT_ULOW2) {
+      if (Bright == BRIGHT_ULOW2) {
         Mode = MODE_DO_PW_OFF;
       }
       else {
-        Bright++;
+        Bright--;
         LedOnSlow(Bright);
       }
       BatCount = 0;
@@ -163,8 +172,8 @@ void BatTest(void)
 }
 
 /*
-  1. при температуре > (заданная + 10) - Отключение фонаря 
-  2. при температуре > заданная - снижение яркости с 2000мА до 600мА 
+  1. при температуре > (заданная + 10) - Отключение фонаря
+  2. при температуре > заданная - снижение яркости с 2000мА до 600мА
   (10 измереий подряд)
 */
 void TempTest(void)

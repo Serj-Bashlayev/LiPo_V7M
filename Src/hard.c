@@ -127,12 +127,12 @@ __interrupt void timer1_isr(void)
 #define SET_TAB_VOUT(v) ((unsigned long)(v * MainPWM_MAX * BAT_COEF))
 
 __flash unsigned long TabVOut[] = {
-  SET_TAB_VOUT(2.92), /* 2000 mA  */
-  SET_TAB_VOUT(0.84), /*  600 mA  */
-  SET_TAB_VOUT(0.24), /*  170 mA  */
-  SET_TAB_VOUT(0.07), /*   50 mA  */
+  3,                  /*    4 mA  */
   SET_TAB_VOUT(0.02), /*   12 mA  */
-  3                   /*    4 mA  */
+  SET_TAB_VOUT(0.07), /*   50 mA  */
+  SET_TAB_VOUT(0.24), /*  170 mA  */
+  SET_TAB_VOUT(0.84), /*  600 mA  */
+  SET_TAB_VOUT(2.92)  /* 2000 mA  */
 };
 
 void VOutSet(BRIGHT_TD bright)
@@ -140,8 +140,8 @@ void VOutSet(BRIGHT_TD bright)
   unsigned long  vo;
   unsigned short bat;
 
-  if (bright > BRIGHT_ULOW2) {
-    bright = BRIGHT_ULOW2;
+  if (bright > BRIGHT_UHI) {
+    bright = BRIGHT_UHI;
   }
   vo = TabVOut[bright];
   bat = GetBat();
@@ -162,7 +162,7 @@ void LedOnSlow(BRIGHT_TD bright)
   unsigned long vo,
                 x;
   VOutSet(bright);
-  if (bright < BRIGHT_ULOW2) {
+  if (bright > BRIGHT_ULOW2) {
     vo = VOut;
     __disable_interrupt();  ///
     VOut = SET_TAB_VOUT(0.006);
@@ -343,7 +343,7 @@ void PowerOff(void)
   MCUCR = 1 << BODS | 1 << SE | 1 << SM1 | 0 << BODSE;
   __enable_interrupt();
   __sleep();
- 
+
   // Power On
   __disable_interrupt();
   GIMSK = 0x00;

@@ -31,12 +31,12 @@
 
 typedef enum
 {
-  BRIGHT_UHI = 0, /*2000mA*/
-  BRIGHT_HI,      /*600mA*/
-  BRIGHT_MID,     /*170mA*/
-  BRIGHT_LOW,     /*50mA*/
-  BRIGHT_ULOW1,   /*12mA*/
-  BRIGHT_ULOW2    /*4mA*/
+  BRIGHT_ULOW2 = 0, /* 4mA    */
+  BRIGHT_ULOW1,     /* 12mA   */
+  BRIGHT_LOW,       /* 50mA   */
+  BRIGHT_MID,       /* 170mA  */
+  BRIGHT_HI,        /* 600mA  */
+  BRIGHT_UHI        /* 2000mA */
 } BRIGHT_TD;
 
 #define BRIGHT_SYSTEM   BRIGHT_LOW

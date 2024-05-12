@@ -11,7 +11,7 @@
 // 05.05.2024 (v0.1):
 //     - Initial release
 // 06.05.2024 (v0.2):
-//     - Added Key_Reset_SM() 
+//     - Added Key_Reset_SM()
 // 12.05.2024 (v0.3):
 //     - Added Key_Set_RELEASE()
 //

@@ -106,8 +106,8 @@ void LongPress(void)
     LedOnSlow(Bright);
   }
   else {
-    if (Bright) {
-      Bright--;
+    if (Bright < BRIGHT_UHI) {
+      Bright++;
       LedOnSlow(Bright);
     }
   }
@@ -129,8 +129,8 @@ void Click_2(void)
     LedOnSlow(Bright);
   }
   else {
-    if (Bright < BRIGHT_ULOW2) {
-      Bright++;
+    if (Bright > BRIGHT_ULOW2) {
+      Bright--;
       LedOnSlow(Bright);
     }
   }
@@ -218,12 +218,12 @@ void DblLongPress(void)
     Mode = MODE_DO_PW_OFF;
   }
   else {
-    if (Bright < BRIGHT_ULOW2) {
-      Bright++;
+    if (Bright > BRIGHT_ULOW2) {
+      Bright--;
       LedOnSlow(Bright);
     }
   }
-  
+
   ClearTimer();
 }
 
@@ -235,7 +235,7 @@ void main(void)
   LoadCfg();
   InitHard();
   Delay(20);
-  while (1) 
+  while (1)
   {
     KeyState = Key_State();
 
