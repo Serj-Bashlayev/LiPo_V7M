@@ -26,6 +26,7 @@
 #define BODSE 2U
 #endif
 
+//#define SYS_CLK 1000000L
 #define SYS_CLK 2000000L
 
 typedef enum

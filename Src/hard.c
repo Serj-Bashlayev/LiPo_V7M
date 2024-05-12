@@ -137,13 +137,6 @@ __flash unsigned long TabVOut[] = {
 
 void VOutSet(BRIGHT_TD bright)
 {
-/*
-  if (bright > BRIGHT_ULOW2)
-    bright = BRIGHT_ULOW2;
-  VOut = TabVOut[bright];
-  BatIntr = GetBat();
-  PORTB |= 1<<PORTB4;
-*/
   unsigned long  vo;
   unsigned short bat;
 
@@ -375,7 +368,15 @@ void InitHard(void)
 {
   __disable_interrupt();
   CLKPR = 1 << CLKPCE;  // Clock Prescaler Change Enable
-  CLKPR = 1 << CLKPS1;  // Clock Division Factor = 4 (CLOCK CPU = 2 MHz)
+
+#if SYS_CLK == 1000000L
+   CLKPR = 1 << CLKPS1 | 1 << CLKPS0;  // Clock Division Factor = 8 (CLOCK CPU = 1 MHz)
+#elif SYS_CLK == 2000000L
+   CLKPR = 1 << CLKPS1;  // Clock Division Factor = 4 (CLOCK CPU = 2 MHz)
+#else
+  #pragma error "define SYS_CLK 2000000L or 1000000L in hard.h"
+#endif
+
   GTCCR = 0x00;         // General Timer/Counter Control Register
   PRR = 1 << PRUSI;     // shuts down the USI by stopping the clock to the module
   // Timer/Counter1 Overflow Interrupt Enable
