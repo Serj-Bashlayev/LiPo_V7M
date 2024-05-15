@@ -2114,7 +2114,4 @@
             <configuration>Release</configuration>
         </excluded>
     </file>
-    <file>
-        <name>$PROJ_DIR$\Src\xprintf\xprintf.c</name>
-    </file>
 </project>

@@ -66,10 +66,10 @@ void LoadCfg(void)
 
 // ѕороги отображени€ напр€жени€ аккумул€тора (1..5 вспышек)
 __flash unsigned short BatVolt[] = {
-  BAT_CALC(3.40 - BAT_SHOTTKY),
-  BAT_CALC(3.65 - BAT_SHOTTKY),
-  BAT_CALC(3.85 - BAT_SHOTTKY),
-  BAT_CALC(4.05 - BAT_SHOTTKY)
+  BAT_CALC(3.40),
+  BAT_CALC(3.65),
+  BAT_CALC(3.85),
+  BAT_CALC(4.05)
 };
 
 void OutBattaryVoltage(void)
@@ -116,23 +116,23 @@ void CalibrationTemp(void)
 
 // снижение €ркости при разр€де аккумул€тора
 __flash unsigned short VModeDown[] = {
-  BAT_CALC(2.75 - BAT_SHOTTKY),
-  BAT_CALC(2.85 - BAT_SHOTTKY),
-  BAT_CALC(3.00 - BAT_SHOTTKY),
-  BAT_CALC(3.12 - BAT_SHOTTKY),
-  BAT_CALC(3.18 - BAT_SHOTTKY),
-  BAT_CALC(3.20 - BAT_SHOTTKY)
+  BAT_CALC(2.75),
+  BAT_CALC(2.85),
+  BAT_CALC(3.00),
+  BAT_CALC(3.12),
+  BAT_CALC(3.18),
+  BAT_CALC(3.20)
 };
 
 // если MODE_2 (включен удержанием) - 
 // "экономный" режим снижени€ €ркости при разр€де аккумул€тора
 __flash unsigned short VModeDownE[] = {
-  BAT_CALC(2.75 - BAT_SHOTTKY),
-  BAT_CALC(3.00 - BAT_SHOTTKY),
-  BAT_CALC(3.15 - BAT_SHOTTKY),
-  BAT_CALC(3.30 - BAT_SHOTTKY),
-  BAT_CALC(3.45 - BAT_SHOTTKY),
-  BAT_CALC(3.50 - BAT_SHOTTKY)
+  BAT_CALC(2.75),
+  BAT_CALC(3.00),
+  BAT_CALC(3.15),
+  BAT_CALC(3.30),
+  BAT_CALC(3.45),
+  BAT_CALC(3.50)
 };
 
 /*
