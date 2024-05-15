@@ -22,6 +22,7 @@
 #include "hard.h"
 #include "misc.h"
 #include "key.h"
+#include <stdio.h>
 
 MODE_TD       Mode;      // режим
 BRIGHT_TD     Mode1_Bright, Mode2_Bright, Mode3_Bright; // яркость режима
@@ -233,6 +234,10 @@ void DblLongPress(void)
 void main(void)
 {
   KEY_STATE_TD KeyState;
+#ifdef UART_DEBUG
+  unsigned short bat;
+  unsigned short bat_mV;
+#endif
 
   LoadCfg();
   InitHard();
@@ -272,6 +277,16 @@ void main(void)
         // короткое + длинное нажатие
         DblLongPress();
         break;
+
+#ifdef UART_DEBUG
+      case 3:
+        // 2 коротих + длинное нажатие
+        bat = GetBat();
+        bat_mV = ((unsigned long)(bat * 1000L) / BAT_COEF);
+        printf("%d %d[mV] %d\n", bat, bat_mV, GetTemp());
+        Key_Set_RELEASE();
+        break;
+#endif
       }
     }
 

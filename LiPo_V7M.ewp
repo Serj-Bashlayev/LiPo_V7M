@@ -62,7 +62,7 @@
                 </option>
                 <option>
                     <name>SCCStackSize</name>
-                    <state>0x40</state>
+                    <state>0x30</state>
                 </option>
                 <option>
                     <name>SCExtCStack</name>
@@ -1049,18 +1049,18 @@
         </settings>
     </configuration>
     <configuration>
-        <name>Debug</name>
+        <name>UART Debug</name>
         <toolchain>
             <name>AVR</name>
         </toolchain>
-        <debug>1</debug>
+        <debug>0</debug>
         <settings>
             <name>General</name>
             <archiveVersion>12</archiveVersion>
             <data>
                 <version>10</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>GGEnhancedCore</name>
                     <state>1</state>
@@ -1072,15 +1072,15 @@
                 </option>
                 <option>
                     <name>ExePath</name>
-                    <state>Debug\Exe</state>
+                    <state>UART Debug\Exe</state>
                 </option>
                 <option>
                     <name>ObjPath</name>
-                    <state>Debug\Obj</state>
+                    <state>UART Debug\Obj</state>
                 </option>
                 <option>
                     <name>ListPath</name>
-                    <state>Debug\List</state>
+                    <state>UART Debug\List</state>
                 </option>
                 <option>
                     <name>GGEnableConfig</name>
@@ -1109,7 +1109,7 @@
                 </option>
                 <option>
                     <name>SCCStackSize</name>
-                    <state>0x40</state>
+                    <state>0x80</state>
                 </option>
                 <option>
                     <name>SCExtCStack</name>
@@ -1267,7 +1267,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>7.20.1.1511</state>
+                    <state>7.30.4.1668</state>
                 </option>
             </data>
         </settings>
@@ -1277,7 +1277,7 @@
             <data>
                 <version>17</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>CCVariantProcessor</name>
                     <state>0</state>
@@ -1297,7 +1297,7 @@
                 <option>
                     <name>CCDefines</name>
                     <state>NDEBUG</state>
-                    <state>_PROTEUS_</state>
+                    <state>UART_DEBUG</state>
                 </option>
                 <option>
                     <name>CCPreprocFile</name>
@@ -1379,7 +1379,7 @@
                 <option>
                     <name>CCAllowList</name>
                     <version>3</version>
-                    <state>000000</state>
+                    <state>111111</state>
                 </option>
                 <option>
                     <name>CCCrossCallPassesList</name>
@@ -1396,7 +1396,7 @@
                 </option>
                 <option>
                     <name>CCDebugInfo</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>CCNoErrorMsg</name>
@@ -1543,11 +1543,11 @@
                 </option>
                 <option>
                     <name>CCOptLevel</name>
-                    <state>0</state>
+                    <state>3</state>
                 </option>
                 <option>
                     <name>CCOptLevelSlave</name>
-                    <state>0</state>
+                    <state>3</state>
                 </option>
             </data>
         </settings>
@@ -1557,7 +1557,7 @@
             <data>
                 <version>11</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>IProcessor</name>
                     <state>0</state>
@@ -1592,7 +1592,7 @@
                 </option>
                 <option>
                     <name>CDebug</name>
-                    <state>1</state>
+                    <state>0</state>
                 </option>
                 <option>
                     <name>ADefines</name>
@@ -1765,19 +1765,19 @@
             <data>
                 <version>16</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>XOutOverride</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>OutputFile</name>
-                    <state>LiPo_V7M.d90</state>
+                    <state>LiPo_V7M.hex</state>
                 </option>
                 <option>
                     <name>OutputFormat</name>
                     <version>11</version>
-                    <state>25</state>
+                    <state>22</state>
                 </option>
                 <option>
                     <name>FormatVariant</name>
@@ -1814,7 +1814,7 @@
                 </option>
                 <option>
                     <name>ListSymbols</name>
-                    <state>2</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>PageLengthCheck</name>
@@ -1918,11 +1918,11 @@
                 </option>
                 <option>
                     <name>IncludeSuppressed</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>ModuleSummary</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>xcProgramEntryLabel</name>
@@ -1930,7 +1930,7 @@
                 </option>
                 <option>
                     <name>DebugInformation</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>RuntimeControl</name>
@@ -1946,20 +1946,20 @@
                 </option>
                 <option>
                     <name>GenerateExtraOutput</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>XExtraOutOverride</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>ExtraOutputFile</name>
-                    <state>LiPo_V7M.a90</state>
+                    <state>LiPo_V7M.bin</state>
                 </option>
                 <option>
                     <name>ExtraOutputFormat</name>
                     <version>11</version>
-                    <state>25</state>
+                    <state>57</state>
                 </option>
                 <option>
                     <name>ExtraFormatVariant</name>
@@ -1976,7 +1976,7 @@
                 </option>
                 <option>
                     <name>ListOutputFormat</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>BufferedTermOutput</name>
@@ -2033,7 +2033,7 @@
                 </option>
                 <option>
                     <name>XlinkLogInputFiles</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>XlinkLogModuleSelection</name>
@@ -2049,11 +2049,11 @@
                 </option>
                 <option>
                     <name>XlinkLogStackDepth</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>XlinkStackUsageEnable</name>
-                    <state>0</state>
+                    <state>1</state>
                 </option>
                 <option>
                     <name>XlinkControlFiles</name>
@@ -2075,7 +2075,7 @@
             <data>
                 <version>0</version>
                 <wantNonLocal>1</wantNonLocal>
-                <debug>1</debug>
+                <debug>0</debug>
                 <option>
                     <name>XAROutOverride</name>
                     <state>0</state>
@@ -2107,5 +2107,11 @@
     </file>
     <file>
         <name>$PROJ_DIR$\Src\misc.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\Src\serial\serial.c</name>
+        <excluded>
+            <configuration>Release</configuration>
+        </excluded>
     </file>
 </project>

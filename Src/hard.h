@@ -41,9 +41,13 @@ typedef enum
 
 #define BRIGHT_SYSTEM   BRIGHT_LOW
 
-#define BAT_COEF 216 // R4/(R4+R2)*1024/1.1
+//#define BAT_COEF 216 // R4/(R4+R2)*1024/1.1
+#define BAT_COEF 221 // реальный коэфф. определённый по измерениям, переданным по UART
 #define BAT_SHOTTKY 0.2 // падение напряжения на диоде Шоттки
-#define BAT_CALC(v) ((unsigned short)(BAT_COEF * (v)))
+
+#define BAT_CALC(v) (unsigned short)(BAT_COEF * (v - BAT_SHOTTKY))
+
+#define T_OFFSET (275 + 10)
 
 typedef union {
   unsigned short s;
@@ -66,7 +70,7 @@ void LedSysBlink(void);
 #define KEY_PRESSED() ((PINB & 0x08) == 0)
 #define KEY_PRESSED_ISR  GPIOR0_Bit0
 
-unsigned short GetTemp(void);
+signed char GetTemp(void);
 unsigned short GetBat(void);
 
 void Sleep(void);

@@ -14,7 +14,10 @@
 #define CFG_ADRESS_MODE2 3
 #define CFG_ADRESS_MODE3 4
 
-#define TEMP_DEF_SET 358 /* 75C */
+// температура снижени€ €ркости с BRIGHT_UHI до BRIGHT_HI
+// при (TEMP_OFF_DEF_SET + 10) - отключение
+// значение по умолчанию (до калибровки)
+#define TEMP_OFF_DEF_SET 65
 
 typedef enum
 {

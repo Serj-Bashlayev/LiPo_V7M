@@ -14,7 +14,7 @@ extern BRIGHT_TD Bright;
 
 unsigned char TempCount;
 unsigned char BatCount;
-UniShort      TempOff;
+signed char   TempOff; // Температура снижения яркости с BRIGHT_UHI до BRIGHT_HI. (TEMP_OFF_DEF_SET + 10) - отключение
 
 unsigned char ReadCfgByte(unsigned char adress, unsigned char *byte)
 {
@@ -60,20 +60,16 @@ void LoadCfg(void)
     Mode2_Bright = BRIGHT_ULOW2;
   if (ReadCfgByte(CFG_ADRESS_MODE3, (unsigned char*)&Mode3_Bright))
     Mode3_Bright = BRIGHT_UHI;
-  if (ReadCfgByte(CFG_ADRESS_TEMP, &(TempOff.c[0]))) {
-    TempOff.s = TEMP_DEF_SET;
-  }
-  else {
-    TempOff.s += 200;
-  }
+  if (ReadCfgByte(CFG_ADRESS_TEMP, (unsigned char*)&TempOff))
+    TempOff = TEMP_OFF_DEF_SET;
 }
 
 // Пороги отображения напряжения аккумулятора (1..5 вспышек)
 __flash unsigned short BatVolt[] = {
-  BAT_CALC(3.40 - BAT_SHOTTKY),
-  BAT_CALC(3.65 - BAT_SHOTTKY),
-  BAT_CALC(3.85 - BAT_SHOTTKY),
-  BAT_CALC(4.05 - BAT_SHOTTKY)
+  BAT_CALC(3.40),
+  BAT_CALC(3.65),
+  BAT_CALC(3.85),
+  BAT_CALC(4.05)
 };
 
 void OutBattaryVoltage(void)
@@ -98,8 +94,8 @@ void OutBattaryVoltage(void)
 
 void CalibrationTemp(void)
 {
-  TempOff.s = TEMP_DEF_SET;
-  WriteCfgByte(CFG_ADRESS_TEMP, (unsigned char)(TempOff.s - 200));
+  TempOff = TEMP_OFF_DEF_SET;
+  WriteCfgByte(CFG_ADRESS_TEMP, TempOff);
   LedOnFast(BRIGHT_UHI);
   while (KEY_PRESSED());
   Delay(500);
@@ -109,34 +105,34 @@ void CalibrationTemp(void)
   while (KEY_PRESSED())
   {
     if (GetTimer() > 2000) {
-      TempOff.s = GetTemp();
+      TempOff = GetTemp();
       LedSysBlink();
       break;
     }
   }
-  WriteCfgByte(CFG_ADRESS_TEMP, (unsigned char)(TempOff.s - 200));
+  WriteCfgByte(CFG_ADRESS_TEMP, TempOff);
   LedSysBlink();
 }
 
 // снижение яркости при разряде аккумулятора
 __flash unsigned short VModeDown[] = {
-  BAT_CALC(2.75 - BAT_SHOTTKY),
-  BAT_CALC(2.85 - BAT_SHOTTKY),
-  BAT_CALC(3.00 - BAT_SHOTTKY),
-  BAT_CALC(3.12 - BAT_SHOTTKY),
-  BAT_CALC(3.18 - BAT_SHOTTKY),
-  BAT_CALC(3.20 - BAT_SHOTTKY)
+  BAT_CALC(2.75),
+  BAT_CALC(2.85),
+  BAT_CALC(3.00),
+  BAT_CALC(3.12),
+  BAT_CALC(3.18),
+  BAT_CALC(3.20)
 };
 
 // если MODE_2 (включен удержанием) - 
 // "экономный" режим снижения яркости при разряде аккумулятора
 __flash unsigned short VModeDownE[] = {
-  BAT_CALC(2.75 - BAT_SHOTTKY),
-  BAT_CALC(3.00 - BAT_SHOTTKY),
-  BAT_CALC(3.15 - BAT_SHOTTKY),
-  BAT_CALC(3.30 - BAT_SHOTTKY),
-  BAT_CALC(3.45 - BAT_SHOTTKY),
-  BAT_CALC(3.50 - BAT_SHOTTKY)
+  BAT_CALC(2.75),
+  BAT_CALC(3.00),
+  BAT_CALC(3.15),
+  BAT_CALC(3.30),
+  BAT_CALC(3.45),
+  BAT_CALC(3.50)
 };
 
 /*
@@ -178,16 +174,16 @@ void BatTest(void)
 */
 void TempTest(void)
 {
-  unsigned short temp;
+  signed char temp;
   temp = GetTemp();
   TempCount++;
-  if (temp > TempOff.s + 10) {
+  if (temp > TempOff + 10) {
     if (TempCount > 10) {
       Mode = MODE_DO_PW_OFF;
     }
     return;
   }
-  if (temp > TempOff.s) {
+  if (temp > TempOff) {
     if ((TempCount > 10) && (Bright == BRIGHT_UHI)) {
       Bright = BRIGHT_HI;
       LedOnSlow(Bright);
