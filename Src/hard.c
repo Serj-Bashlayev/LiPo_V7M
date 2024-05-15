@@ -9,6 +9,9 @@
 #include "hard.h"
 #include <intrinsics.h>
 
+// TODO: debug only
+void TX_ISR(void);
+
 #define ADC_BATVOLTAGE 0x81 // Internal 1.1V Voltage Reference. Single Ended Input ADC1 (PB2)
 #define ADC_TEMP 0x8F       // Internal 1.1V Voltage Reference. Single Ended Input ADC4 (For temperature sensor)
 
@@ -107,6 +110,9 @@ void timer1_sleep(void)
 #pragma vector = TIMER1_OVF_vect
 __interrupt void timer1_isr(void)
 {
+  // TODO: debug only
+  TX_ISR();
+
   register unsigned char b;
   b = PWM_Count;
   b++;
@@ -276,9 +282,15 @@ void adc_sleep(void)
   ADCSRA = 0;
 }
 
+extern volatile unsigned char tx_buzy;
 #pragma vector = ADC_vect
 __interrupt void adc_isr(void)
 {
+  // TODO: debug only
+  if (tx_buzy) {
+    return;
+  }
+
   if (ADC_Count) {
     ADC_Count--;
     goto Llex;

@@ -62,7 +62,7 @@
                 </option>
                 <option>
                     <name>SCCStackSize</name>
-                    <state>0x40</state>
+                    <state>0x80</state>
                 </option>
                 <option>
                     <name>SCExtCStack</name>
@@ -1109,7 +1109,7 @@
                 </option>
                 <option>
                     <name>SCCStackSize</name>
-                    <state>0x40</state>
+                    <state>0x80</state>
                 </option>
                 <option>
                     <name>SCExtCStack</name>
@@ -1267,7 +1267,7 @@
                 </option>
                 <option>
                     <name>OGLastSavedByProductVersion</name>
-                    <state>7.20.1.1511</state>
+                    <state>7.30.4.1668</state>
                 </option>
             </data>
         </settings>
@@ -2107,5 +2107,8 @@
     </file>
     <file>
         <name>$PROJ_DIR$\Src\misc.c</name>
+    </file>
+    <file>
+        <name>$PROJ_DIR$\Src\serial\serial.c</name>
     </file>
 </project>
