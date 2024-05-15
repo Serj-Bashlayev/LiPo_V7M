@@ -47,6 +47,8 @@ typedef enum
 #define BAT_SHOTTKY 0.2 // падение напряжения на диоде Шоттки
 #define BAT_CALC(v) ((unsigned short)(BAT_COEF * (v)))
 
+#define T_OFFSET (275 + 10)
+
 typedef union {
   unsigned short s;
   unsigned char  c[2];
@@ -68,7 +70,7 @@ void LedSysBlink(void);
 #define KEY_PRESSED() ((PINB & 0x08) == 0)
 #define KEY_PRESSED_ISR  GPIOR0_Bit0
 
-unsigned short GetTemp(void);
+signed char GetTemp(void);
 unsigned short GetBat(void);
 
 void Sleep(void);

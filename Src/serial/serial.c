@@ -26,7 +26,6 @@
 
 /* prototypes */
 // misc routines
-//int serial_putc(char c, FILE *file);
 void serial_write(uint8_t tx_byte);
 
 // must be volatile (change and test in main and ISR)
@@ -84,74 +83,5 @@ void serial_print(const char *str) {
     serial_write(str[i]);
   }
 }
-#endif
-
-#if 0
-/*** misc routines ***/
-
-// safe access to millis counter
-uint64_t millis()
-{
-  uint64_t m;
-  cli();
-  m = _millis;
-  sei();
-  return m;
-}
-
-/*** main routines ***/
-
-void setup(void)
-{
-  // LED IO
-  sbi(DDRB,  PB3); // set LED pin as output
-  sbi(PORTB, PB3); // turn the LED on
-  // Software UART IO
-  sbi(DDRB,  UART_PIN); // UART_PIN as output
-  sbi(PORTB, UART_PIN); // serial idle level is '1'
-  /* interrup setup */
-  // call ISR(TIM0_COMPA_vect) every 103us (for 9600 bauds)
-  // set CTC mode : clear timer on comapre match
-  // -> reset TCNTO (timer 0) when TCNTO == OCR0A
-  sbi(TCCR0A, WGM01);
-  // prescaler : clk/8 (1 tic = 1us for 8MHz clock)
-  sbi(TCCR0B, CS01);
-  // compare register A at 103 us
-  OCR0A = 103;
-  // interrupt on compare match OCROA == TCNT0
-  sbi(TIMSK, OCIE0A);
-  // Enable global interrupts
-  sei();
-#ifdef USE_PRINTF
-  // init stdout = serial
-  init_printf();
-#endif
-}
-
-void loop(void)
-{
-  // every 100ms toggle LED
-  if ((millis() - old_millis) > 2000) {
-    // Toggle Port B pin 3 output state
-    PORTB ^= 1 << PB3;
-    old_millis = millis();
-#ifdef USE_PRINTF
-    printf("toggle LED\r\n");
-#else
-    serial_print("toggle LED\r\n");
-#endif
-  }
-}
-* /
-/*
-  Arduino like
-*/
-int main(void)
-{
-  setup();
-  for (;;) {
-    loop();
-  }
-};
 #endif
 

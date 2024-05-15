@@ -19,8 +19,6 @@
 //
 //===========================================================================
 
-void serial_print(const char *str);
-
 #include "hard.h"
 #include "misc.h"
 #include "key.h"
@@ -236,9 +234,10 @@ void DblLongPress(void)
 void main(void)
 {
   KEY_STATE_TD KeyState;
-  // TODO: debug only
+#ifdef UART_DEBUG
   unsigned short bat;
   unsigned short bat_mV;
+#endif
 
   LoadCfg();
   InitHard();
@@ -279,15 +278,15 @@ void main(void)
         DblLongPress();
         break;
 
-        // TODO: debug only
+#ifdef UART_DEBUG
       case 3:
         // 2 коротих + длинное нажатие
         bat = GetBat();
         bat_mV = ((unsigned long)(bat * 1000L) / BAT_COEF);
         printf("%d %d[mV] %d\n", bat, bat_mV, GetTemp());
-        //serial_print("123\n");
         Key_Set_RELEASE();
         break;
+#endif
       }
     }
 

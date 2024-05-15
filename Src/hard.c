@@ -9,9 +9,6 @@
 #include "hard.h"
 #include <intrinsics.h>
 
-// TODO: debug only
-void TX_ISR(void);
-
 #define ADC_BATVOLTAGE 0x81 // Internal 1.1V Voltage Reference. Single Ended Input ADC1 (PB2)
 #define ADC_TEMP 0x8F       // Internal 1.1V Voltage Reference. Single Ended Input ADC4 (For temperature sensor)
 
@@ -106,12 +103,18 @@ void timer1_sleep(void)
   TCCR1 = 0x00;
 }
 
+
+#ifdef UART_DEBUG
+  void TX_ISR(void);
+#endif
+
 // 7874 Hz (127µS)
 #pragma vector = TIMER1_OVF_vect
 __interrupt void timer1_isr(void)
 {
-  // TODO: debug only
+#ifdef UART_DEBUG
   TX_ISR();
+#endif
 
   register unsigned char b;
   b = PWM_Count;
@@ -245,13 +248,16 @@ void LedSysBlink(void)
   Delay(400);
 }
 
-unsigned short GetTemp(void)
+/* 
+  темпрература в градусах (-128..127)
+*/
+signed char GetTemp(void)
 {
   unsigned short r;
   __disable_interrupt();
   r = TempADC.s;
   __enable_interrupt();
-  return r;
+  return (r - T_OFFSET);
 }
 
 unsigned short GetBat(void)
@@ -282,14 +288,16 @@ void adc_sleep(void)
   ADCSRA = 0;
 }
 
-extern volatile unsigned char tx_buzy;
+
 #pragma vector = ADC_vect
 __interrupt void adc_isr(void)
 {
-  // TODO: debug only
+#ifdef UART_DEBUG
+  extern volatile unsigned char tx_buzy;
   if (tx_buzy) {
     return;
   }
+#endif
 
   if (ADC_Count) {
     ADC_Count--;
