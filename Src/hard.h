@@ -47,7 +47,7 @@ typedef enum
 
 #define BAT_CALC(v) (unsigned short)(BAT_COEF * (v - BAT_SHOTTKY))
 
-#define T_OFFSET (275 + 10)
+#define T_OFFSET (275 + 10) // 275 - const, +10 - коррекция определённая по измерениям, переданным по UART
 
 typedef union {
   unsigned short s;
