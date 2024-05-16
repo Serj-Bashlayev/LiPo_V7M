@@ -1,9 +1,9 @@
 //===========================================================================
 // FILE:      misc.c
 // AUTHOR:    AVSel
-// VERSION:   7.0m
+// VERSION:   7.5m
 // DATE:      05/03/2014
-// LAST MODIFICATION : Serj Balabay (17.04.2020)
+// LAST MODIFICATION : Serj Balabay (16.05.2024)
 //===========================================================================
 
 #include "hard.h"
@@ -197,7 +197,7 @@ void TempTest(void)
 #define k   4
 #define Nb  1 // Nb = 1,2,3...(2^k)
               //    1   - самая сильная фильтрация
-              //    2^k - отсутсвие фильртрации
+              //    2^k - отсутствие фильтрации
 unsigned short filter(unsigned short x, char init)
 {
   static unsigned short y = 0;

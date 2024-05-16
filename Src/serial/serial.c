@@ -1,10 +1,5 @@
 /* 
   sample UART software
-  transmit serial data at 9600,N,8,1
-  code for avr-gcc
-           ATTiny85 at 8 MHz
-
-
   code in public domain
 */
 

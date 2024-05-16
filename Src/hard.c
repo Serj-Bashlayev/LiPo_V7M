@@ -1,9 +1,9 @@
 //===========================================================================
 // FILE:      hard.c
 // AUTHOR:    AVSel
-// VERSION:   7.0m
+// VERSION:   7.5m
 // DATE:      05/03/2014
-// LAST MODIFICATION : Serj Balabay (17.04.2020)
+// LAST MODIFICATION : Serj Balabay (16.05.2024)
 //===========================================================================
 
 #include "hard.h"
