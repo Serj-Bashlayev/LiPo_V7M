@@ -7,6 +7,7 @@
 //===========================================================================
 
 #include "hard.h"
+#include "key.h"
 #include <intrinsics.h>
 
 #define ADC_BATVOLTAGE 0x81 // Internal 1.1V Voltage Reference. Single Ended Input ADC1 (PB2)
@@ -18,11 +19,8 @@ volatile unsigned char  WaitCount;
 unsigned char  ADC_Count, PWM_Count;
 UniShort       TempADC, BatADC;
 unsigned long  VOut;
-unsigned short MainPWM, BatIntr, BatDiv;
+unsigned short MainPWM, BatIntr;
 unsigned char  MainPWM_Hi, MainPWM_Lo;
-signed char    BatIntrLow;
-
-#define MainPWM_MAX 2040  // 0x7F8
 
 #pragma vector = PCINT0_vect
 __interrupt void ext0_isr(void)
@@ -116,32 +114,38 @@ __interrupt void timer1_isr(void)
   TX_ISR();
 #endif
 
-  register unsigned char b;
-  b = PWM_Count;
-  b++;
-  if (b >= 8)
-    b = 0;
-  PWM_Count = b;
-  if (b < MainPWM_Lo) {
-    b = MainPWM_Hi;
-    b++;
-    OCR1A = b;
-  }
-  else {
-    b = MainPWM_Hi;
-    OCR1A = b;
-  }
+  // PWM_Count 0,1..7,0,1..
+  if (PWM_Count < 7)
+    PWM_Count++;
+  else
+    PWM_Count = 0;
+
+  if (PWM_Count < MainPWM_Lo)
+    OCR1A = MainPWM_Hi + 1;
+  else
+    OCR1A = MainPWM_Hi;
 }
 
-#define SET_TAB_VOUT(v) ((unsigned long)(v * MainPWM_MAX * BAT_COEF))
+//#define SET_TAB_VOUT(v) ((unsigned long)(v * MainPWM_MAX * BAT_COEF))
+//
+//__flash unsigned long TabVOut[] = {
+//  3,                  /*    4 mA  */
+//  SET_TAB_VOUT(0.02), /*   12 mA  */
+//  SET_TAB_VOUT(0.07), /*   50 mA  */
+//  SET_TAB_VOUT(0.24), /*  170 mA  */
+//  SET_TAB_VOUT(0.84), /*  600 mA  */
+//  SET_TAB_VOUT(2.92)  /* 2000 mA  */
+//};
 
-__flash unsigned long TabVOut[] = {
-  3,                  /*    4 mA  */
-  SET_TAB_VOUT(0.02), /*   12 mA  */
-  SET_TAB_VOUT(0.07), /*   50 mA  */
-  SET_TAB_VOUT(0.24), /*  170 mA  */
-  SET_TAB_VOUT(0.84), /*  600 mA  */
-  SET_TAB_VOUT(2.92)  /* 2000 mA  */
+#define SET_TAB_IOUT(i) (unsigned long)(i * PWM_COEF)
+
+__flash unsigned long TabIOut[] = {
+  SET_TAB_IOUT(   4.0),
+  SET_TAB_IOUT(  12.0),
+  SET_TAB_IOUT(  50.0),
+  SET_TAB_IOUT( 170.0),
+  SET_TAB_IOUT( 600.0),
+  SET_TAB_IOUT(1500.0)
 };
 
 void VOutSet(BRIGHT_TD bright)
@@ -152,7 +156,7 @@ void VOutSet(BRIGHT_TD bright)
   if (bright > BRIGHT_UHI) {
     bright = BRIGHT_UHI;
   }
-  vo = TabVOut[bright];
+  vo = TabIOut[bright];
   bat = GetBat();
   __disable_interrupt();
   VOut = vo;
@@ -173,9 +177,9 @@ void LedOnSlow(BRIGHT_TD bright)
   VOutSet(bright);
   if (bright > BRIGHT_ULOW2) {
     vo = VOut;
-    __disable_interrupt();  ///
-    VOut = SET_TAB_VOUT(0.006);
-    __enable_interrupt();   ///
+    __disable_interrupt();
+    VOut = SET_TAB_IOUT(1.0);
+    __enable_interrupt();
     while (vo > VOut)
     {
       x = VOut / 9 + vo / 70;
@@ -183,15 +187,18 @@ void LedOnSlow(BRIGHT_TD bright)
       VOut += x;
       __enable_interrupt();
     }
-    __disable_interrupt();  ///
+    __disable_interrupt();
     VOut = vo;
-    __enable_interrupt();   ///
+    __enable_interrupt();
   }
 }
 
 // Время dыполнения ~480 µs
 void AdjPower(void)
 {
+  static signed char    BatIntrLow;
+  static unsigned short BatDiv;
+
   if ((PORTB & (1 << PORTB4)) == 0) {
     MainPWM = 0;
     MainPWM_Lo = MainPWM_Hi = 0;
@@ -248,7 +255,7 @@ void LedSysBlink(void)
   Delay(400);
 }
 
-/* 
+/*
   темпрература в градусах (-128..127)
 */
 signed char GetTemp(void)

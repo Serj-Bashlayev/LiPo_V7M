@@ -299,7 +299,7 @@ void main(void)
       case 3:
         // 2 коротких + длинное нажатие
         bat = GetBat();
-        bat_mV = ((unsigned long)(bat * 1000L) / BAT_COEF);
+        bat_mV = ((unsigned long)(bat * 1000L) / (unsigned long)BAT_COEF);
         printf("%d %d[mV] %d\n", bat, bat_mV, GetTemp());
         Key_Set_RELEASE();
         break;

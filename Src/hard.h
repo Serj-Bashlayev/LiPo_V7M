@@ -1,14 +1,15 @@
 //===========================================================================
 // FILE:      hard.h
-// AUTHOR:        AVSel
-// VERSION:     7.5m
-// DATE:    05/03/2014
+// AUTHOR:    AVSel
+// VERSION:   7.5m
+// DATE:      05/03/2014
 // LAST MODIFICATION : Serj Balabay (16.05.2024)
 //===========================================================================
 
 #ifndef _HARD_H
 #define _HARD_H
 
+#include "config.h"
 #include <ioavr.h>
 
 #if (__VER__ == 610)
@@ -26,9 +27,6 @@
 #define BODSE 2U
 #endif
 
-//#define SYS_CLK 1000000L
-#define SYS_CLK 2000000L
-
 typedef enum
 {
   BRIGHT_ULOW2 = 0, /* 4mA    */
@@ -41,11 +39,13 @@ typedef enum
 
 #define BRIGHT_SYSTEM   BRIGHT_LOW
 
-//#define BAT_COEF 216 // R4/(R4+R2)*1024/1.1
-#define BAT_COEF 221 // реальный коэфф. определённый по измерениям, переданным по UART
-#define BAT_SHOTTKY 0.2 // падение напряжения на диоде Шоттки
+#define MainPWM_MAX 2040  // 0x7F8
 
-#define BAT_CALC(v) (unsigned short)(BAT_COEF * (v - BAT_SHOTTKY))
+//#define BAT_COEF (1024.0 * (double)R4 / ((double)R4 + (double)R2) / V_REF)
+#define BAT_COEF 221 // реальный коэфф. определённый по измерениям, переданным по UART
+#define BAT_CALC(v) (unsigned short)(BAT_COEF * (v - V_SHOTTKY))
+
+#define PWM_COEF   ((double)MainPWM_MAX * (double)BAT_COEF * R_SH * ((double)R3 + (double)R5) / (double)R5 / 1000.0)
 
 #define T_OFFSET (275 + 10) // 275 - const, +10 - коррекция определённая по измерениям, переданным по UART
 
@@ -59,16 +59,13 @@ void InitHard(void);
 
 void ClearTimer(void);
 unsigned short GetTimer(void);
-void Delay(unsigned short  ms);
+void Delay(unsigned short ms);
 void Wait30ms(void);
 
 void LedOnFast(BRIGHT_TD mode);
 void LedOnSlow(BRIGHT_TD mode);
 void LedOff(void);
 void LedSysBlink(void);
-
-#define KEY_PRESSED() ((PINB & 0x08) == 0)
-#define KEY_PRESSED_ISR  GPIOR0_Bit0
 
 signed char GetTemp(void);
 unsigned short GetBat(void);

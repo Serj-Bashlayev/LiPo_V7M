@@ -8,8 +8,9 @@
 
 #include "hard.h"
 #include "misc.h"
+#include "key.h"
 
-extern BRIGHT_TD Mode1_Bright,Mode2_Bright,Mode3_Bright;;
+extern BRIGHT_TD Mode1_Bright,Mode2_Bright,Mode3_Bright;
 extern BRIGHT_TD Bright;
 
 unsigned char TempCount;
