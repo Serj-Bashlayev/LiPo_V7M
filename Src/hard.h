@@ -27,6 +27,8 @@
 #define BODSE 2U
 #endif
 
+#define SYS_CLK     2000000L
+
 typedef enum
 {
   BRIGHT_ULOW2 = 0, /* 4mA    */
