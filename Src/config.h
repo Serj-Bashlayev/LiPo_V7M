@@ -5,10 +5,10 @@
 #define R4          10000
 #define R3          33000
 #define R5          560
-#define R_SH        0.025
+#define R_SH        0.03333333
 
 #define V_REF       1.077
-#define V_SHOTTKY   0.25 // падение напряжения на диоде Шоттки
+#define V_SHOTTKY   0.20 // падение напряжения на диоде Шоттки
 
 // температура снижения яркости с BRIGHT_UHI до BRIGHT_HI
 // при (TEMP_OFF_DEF_SET + 10) - отключение

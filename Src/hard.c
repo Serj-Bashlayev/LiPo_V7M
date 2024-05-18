@@ -16,11 +16,10 @@
 volatile unsigned short Timer;
 volatile unsigned char  WaitCount;
 
-unsigned char  ADC_Count, PWM_Count;
-UniShort       TempADC, BatADC;
-unsigned long  VOut;
-unsigned short MainPWM, BatIntr;
-unsigned char  MainPWM_Hi, MainPWM_Lo;
+UniShort TempADC, BatADC;
+volatile unsigned long  VOut;
+volatile unsigned short BatIntr;
+volatile unsigned char  MainPWM_Hi, MainPWM_Lo;
 
 #pragma vector = PCINT0_vect
 __interrupt void ext0_isr(void)
@@ -110,20 +109,14 @@ void timer1_sleep(void)
 #pragma vector = TIMER1_OVF_vect
 __interrupt void timer1_isr(void)
 {
+  static unsigned char PWM_Count;
+
 #ifdef UART_DEBUG
   TX_ISR();
 #endif
 
-  // PWM_Count 0,1..7,0,1..
-  if (PWM_Count < 7)
-    PWM_Count++;
-  else
-    PWM_Count = 0;
-
-  if (PWM_Count < MainPWM_Lo)
-    OCR1A = MainPWM_Hi + 1;
-  else
-    OCR1A = MainPWM_Hi;
+  PWM_Count++;
+  OCR1A = ((PWM_Count & 7) < MainPWM_Lo) ? MainPWM_Hi + 1 : MainPWM_Hi;
 }
 
 //#define SET_TAB_VOUT(v) ((unsigned long)(v * MainPWM_MAX * BAT_COEF))
@@ -161,8 +154,8 @@ void VOutSet(BRIGHT_TD bright)
   __disable_interrupt();
   VOut = vo;
   BatIntr = bat;
-  __enable_interrupt();
   PORTB |= 1 << PORTB4;
+  __enable_interrupt();
 }
 
 void LedOnFast(BRIGHT_TD bright)
@@ -198,12 +191,14 @@ void AdjPower(void)
 {
   static signed char    BatIntrLow;
   static unsigned short BatDiv;
+  static unsigned short MainPWM;
 
   if ((PORTB & (1 << PORTB4)) == 0) {
     MainPWM = 0;
     MainPWM_Lo = MainPWM_Hi = 0;
     return;
   }
+
   if (VOut < 8) {
     MainPWM = VOut;
   }
@@ -234,12 +229,14 @@ void AdjPower(void)
       MainPWM = VOut / BatDiv;
     }
   }
+
   if (MainPWM > MainPWM_MAX)
     MainPWM = MainPWM_MAX;
+
   __disable_interrupt();
   MainPWM_Lo = MainPWM & 0x07;
   MainPWM_Hi = MainPWM >> 3;
-  __enable_interrupt();
+//  __enable_interrupt();
 }
 
 void LedOff(void)
@@ -299,6 +296,8 @@ void adc_sleep(void)
 #pragma vector = ADC_vect
 __interrupt void adc_isr(void)
 {
+  static unsigned char  ADC_Count;
+
 #ifdef UART_DEBUG
   extern volatile unsigned char tx_buzy;
   if (tx_buzy) {

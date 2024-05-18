@@ -254,6 +254,7 @@ void main(void)
 #ifdef UART_DEBUG
   unsigned short bat;
   unsigned short bat_mV;
+  unsigned char  hi, lo;
 #endif
 
   LoadCfg();
@@ -300,7 +301,9 @@ void main(void)
         // 2 коротких + длинное нажатие
         bat = GetBat();
         bat_mV = ((unsigned long)(bat * 1000L) / (unsigned long)BAT_COEF);
-        printf("%d %d[mV] %d\n", bat, bat_mV, GetTemp());
+        hi = MainPWM_Hi;
+        lo = MainPWM_Lo;
+        printf("%d %d[mV] %d Hi:0x%X Lo:0x%X\n", bat, bat_mV, GetTemp(), hi, lo);
         Key_Set_RELEASE();
         break;
 #endif

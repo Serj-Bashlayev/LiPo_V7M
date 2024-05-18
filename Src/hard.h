@@ -41,8 +41,8 @@ typedef enum
 
 #define MainPWM_MAX 2040  // 0x7F8
 
-//#define BAT_COEF (1024.0 * (double)R4 / ((double)R4 + (double)R2) / V_REF)
-#define BAT_COEF 221 // реальный коэфф. определённый по измерениям, переданным по UART
+#define BAT_COEF (1024.0 * (double)R4 / ((double)R4 + (double)R2) / V_REF)
+//#define BAT_COEF 221 // реальный коэфф. определённый по измерениям, переданным по UART
 #define BAT_CALC(v) (unsigned short)(BAT_COEF * (v - V_SHOTTKY))
 
 #define PWM_COEF   ((double)MainPWM_MAX * (double)BAT_COEF * R_SH * ((double)R3 + (double)R5) / (double)R5 / 1000.0)
@@ -54,6 +54,7 @@ typedef union {
   unsigned char  c[2];
 } UniShort;
 
+extern volatile unsigned char  MainPWM_Hi, MainPWM_Lo;
 
 void InitHard(void);
 
