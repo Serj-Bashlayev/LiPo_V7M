@@ -7,6 +7,7 @@
 //===========================================================================
 
 #include "hard.h"
+#include "key.h"
 #include <intrinsics.h>
 
 #define ADC_BATVOLTAGE 0x81 // Internal 1.1V Voltage Reference. Single Ended Input ADC1 (PB2)
@@ -15,14 +16,10 @@
 volatile unsigned short Timer;
 volatile unsigned char  WaitCount;
 
-unsigned char  ADC_Count, PWM_Count;
-UniShort       TempADC, BatADC;
-unsigned long  VOut;
-unsigned short MainPWM, BatIntr, BatDiv;
-unsigned char  MainPWM_Hi, MainPWM_Lo;
-signed char    BatIntrLow;
-
-#define MainPWM_MAX 2040  // 0x7F8
+UniShort TempADC, BatADC;
+volatile unsigned long  VOut;
+volatile unsigned short BatIntr;
+volatile unsigned char  MainPWM_Hi, MainPWM_Lo;
 
 #pragma vector = PCINT0_vect
 __interrupt void ext0_isr(void)
@@ -112,36 +109,36 @@ void timer1_sleep(void)
 #pragma vector = TIMER1_OVF_vect
 __interrupt void timer1_isr(void)
 {
+  static unsigned char PWM_Count;
+
 #ifdef UART_DEBUG
   TX_ISR();
 #endif
 
-  register unsigned char b;
-  b = PWM_Count;
-  b++;
-  if (b >= 8)
-    b = 0;
-  PWM_Count = b;
-  if (b < MainPWM_Lo) {
-    b = MainPWM_Hi;
-    b++;
-    OCR1A = b;
-  }
-  else {
-    b = MainPWM_Hi;
-    OCR1A = b;
-  }
+  PWM_Count++;
+  OCR1A = ((PWM_Count & 7) < MainPWM_Lo) ? MainPWM_Hi + 1 : MainPWM_Hi;
 }
 
-#define SET_TAB_VOUT(v) ((unsigned long)(v * MainPWM_MAX * BAT_COEF))
+//#define SET_TAB_VOUT(v) ((unsigned long)(v * MainPWM_MAX * BAT_COEF))
+//
+//__flash unsigned long TabVOut[] = {
+//  3,                  /*    4 mA  */
+//  SET_TAB_VOUT(0.02), /*   12 mA  */
+//  SET_TAB_VOUT(0.07), /*   50 mA  */
+//  SET_TAB_VOUT(0.24), /*  170 mA  */
+//  SET_TAB_VOUT(0.84), /*  600 mA  */
+//  SET_TAB_VOUT(2.92)  /* 2000 mA  */
+//};
 
-__flash unsigned long TabVOut[] = {
-  3,                  /*    4 mA  */
-  SET_TAB_VOUT(0.02), /*   12 mA  */
-  SET_TAB_VOUT(0.07), /*   50 mA  */
-  SET_TAB_VOUT(0.24), /*  170 mA  */
-  SET_TAB_VOUT(0.84), /*  600 mA  */
-  SET_TAB_VOUT(2.92)  /* 2000 mA  */
+#define SET_TAB_IOUT(i) (unsigned long)(i * PWM_COEF)
+
+__flash unsigned long TabIOut[] = {
+  SET_TAB_IOUT(   4.0),
+  SET_TAB_IOUT(  12.0),
+  SET_TAB_IOUT(  50.0),
+  SET_TAB_IOUT( 170.0),
+  SET_TAB_IOUT( 600.0),
+  SET_TAB_IOUT(1500.0)
 };
 
 void VOutSet(BRIGHT_TD bright)
@@ -152,13 +149,13 @@ void VOutSet(BRIGHT_TD bright)
   if (bright > BRIGHT_UHI) {
     bright = BRIGHT_UHI;
   }
-  vo = TabVOut[bright];
+  vo = TabIOut[bright];
   bat = GetBat();
   __disable_interrupt();
   VOut = vo;
   BatIntr = bat;
-  __enable_interrupt();
   PORTB |= 1 << PORTB4;
+  __enable_interrupt();
 }
 
 void LedOnFast(BRIGHT_TD bright)
@@ -173,9 +170,9 @@ void LedOnSlow(BRIGHT_TD bright)
   VOutSet(bright);
   if (bright > BRIGHT_ULOW2) {
     vo = VOut;
-    __disable_interrupt();  ///
-    VOut = SET_TAB_VOUT(0.006);
-    __enable_interrupt();   ///
+    __disable_interrupt();
+    VOut = SET_TAB_IOUT(1.0);
+    __enable_interrupt();
     while (vo > VOut)
     {
       x = VOut / 9 + vo / 70;
@@ -183,20 +180,25 @@ void LedOnSlow(BRIGHT_TD bright)
       VOut += x;
       __enable_interrupt();
     }
-    __disable_interrupt();  ///
+    __disable_interrupt();
     VOut = vo;
-    __enable_interrupt();   ///
+    __enable_interrupt();
   }
 }
 
 // Время dыполнения ~480 µs
 void AdjPower(void)
 {
+  static signed char    BatIntrLow;
+  static unsigned short BatDiv;
+  static unsigned short MainPWM;
+
   if ((PORTB & (1 << PORTB4)) == 0) {
     MainPWM = 0;
     MainPWM_Lo = MainPWM_Hi = 0;
     return;
   }
+
   if (VOut < 8) {
     MainPWM = VOut;
   }
@@ -227,12 +229,14 @@ void AdjPower(void)
       MainPWM = VOut / BatDiv;
     }
   }
+
   if (MainPWM > MainPWM_MAX)
     MainPWM = MainPWM_MAX;
+
   __disable_interrupt();
   MainPWM_Lo = MainPWM & 0x07;
   MainPWM_Hi = MainPWM >> 3;
-  __enable_interrupt();
+//  __enable_interrupt();
 }
 
 void LedOff(void)
@@ -248,7 +252,7 @@ void LedSysBlink(void)
   Delay(400);
 }
 
-/* 
+/*
   темпрература в градусах (-128..127)
 */
 signed char GetTemp(void)
@@ -292,6 +296,8 @@ void adc_sleep(void)
 #pragma vector = ADC_vect
 __interrupt void adc_isr(void)
 {
+  static unsigned char  ADC_Count;
+
 #ifdef UART_DEBUG
   extern volatile unsigned char tx_buzy;
   if (tx_buzy) {

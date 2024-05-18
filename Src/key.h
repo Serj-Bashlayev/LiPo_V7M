@@ -21,6 +21,9 @@ typedef struct {
   unsigned char Counter;
 } KEY_STATE_TD;
 
+#define KEY_PRESSED() ((PINB & 0x08) == 0)
+#define KEY_PRESSED_ISR  GPIOR0_Bit0
+
 void Key_Reset_SM(void);
 void Key_Set_RELEASE(void);
 KEY_STATE_TD Key_State(void);
