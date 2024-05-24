@@ -8,13 +8,13 @@
 
 #include "hard.h"
 #include "key.h"
-#include <intrinsics.h>
 
 #define ADC_BATVOLTAGE 0x81 // Internal 1.1V Voltage Reference. Single Ended Input ADC1 (PB2)
 #define ADC_TEMP 0x8F       // Internal 1.1V Voltage Reference. Single Ended Input ADC4 (For temperature sensor)
 
 volatile unsigned short Timer;
 volatile unsigned char  WaitCount;
+volatile unsigned short BlinkTimer;
 
 UniShort TempADC, BatADC;
 volatile unsigned long  VOut;
@@ -41,8 +41,11 @@ void timer0_init(void)
 __interrupt void timer0_isr(void)
 {
   Timer++;
+  KeyTimer++;
   if (WaitCount)
     WaitCount--;
+  if (BlinkTimer)
+    BlinkTimer--;
   if (KEY_PRESSED())
     KEY_PRESSED_ISR = 1;
 }

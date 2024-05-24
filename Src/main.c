@@ -3,10 +3,10 @@
 // DESCRIPTION:
 //
 // AUTHOR:      AVSel
-// VERSION:     7.6m
+// VERSION:     7.7m
 // DATE:        03.05.2014
 //
-// LAST MODIFICATION : Serj Balabay (18.05.2024)
+// LAST MODIFICATION : Serj Balabay (24.05.2024)
 // HISTORY:
 // 7.0m - (03.05.2014)
 //    Исходный файл от AVSel с форума фонарёвки
@@ -40,6 +40,11 @@
 //    - Переписан обработчик прерывания timer1_isr()
 //    - Новая математика таблицы задания яркости режимов (TabIOut[])
 //    - Обьявления некоторых переменных перенесены в тело функций (static)
+//
+// 7.7m - (24.05.2024)
+//    - Переписан режим маячка
+//    - Независимый таймер анализу состояний нажатий кнопки
+//    - Команда отключения питания после отображения уровня заряда
 //===========================================================================
 
 #include "hard.h"
@@ -52,40 +57,56 @@ BRIGHT_TD     Mode1_Bright, Mode2_Bright, Mode3_Bright; // яркость режима
 BRIGHT_TD     Bright;    // текущая яркость
 unsigned char PowerOnBlocked; // включение фонарика заблокировано
 
+enum {
+  BLINK_OFF = 0,
+  BLINK_LED_ON,
+  BLINK_LED_OFF
+} BlinkState;
+
+void BlinkModeOn(void)
+{
+  LedOff();
+  BlinkState = BLINK_LED_OFF;
+  __disable_interrupt();
+  BlinkTimer = 500;
+  __enable_interrupt();
+}
+
+void BlinkModeOff(void)
+{
+  LedOnSlow(Bright);
+  BlinkState = BLINK_OFF;
+}
 
 // режим маячка
 // период мигания 10, 4 или 1 сек
 // время вспышки 0.1 сек
 void BlinkMode(void)
 {
-  unsigned char i,
-                j;
-  LedOff();
-  Delay(500);
-  LedOnFast(Bright);
-  KEY_PRESSED_ISR = 0;  // сброс флага нажатия кнопки
-  Delay(200);
+  if (BlinkState == BLINK_OFF)
+    return;
+  if (BlinkTimer != 0)
+    return;
+  if (Mode == MODE_DO_PW_OFF || Mode == MODE_PW_OFF) {
+    BlinkState = BLINK_OFF;
+    return;
+  }
 
-  j = 40;
-  if (Mode == MODE_1)
-    j = 16;
-  else if (Mode == MODE_3)
-    j = 4;
-
-  while (1)
-  {
-    LedOff();
-    for (i = 0; i < j; i++) {
-      Delay(250);
-      if (KEY_PRESSED_ISR)
-        return;
-
-      BatTest();
-      if (Mode == MODE_DO_PW_OFF)
-        return;
-    }
-    LedOnFast(Bright);
-    Delay(100);
+  switch (BlinkState) {
+  case BLINK_LED_ON:
+      LedOff();
+      BlinkState = BLINK_LED_OFF;
+      __disable_interrupt();
+      BlinkTimer = (Mode == MODE_1) ? 4000 : (Mode == MODE_2) ? 10000 : 1000;
+      __enable_interrupt();
+    break;
+  case BLINK_LED_OFF:
+      LedOnFast(Bright);
+      BlinkState = BLINK_LED_ON;
+      __disable_interrupt();
+      BlinkTimer = 100;
+      __enable_interrupt();
+    break;
   }
 }
 
@@ -173,11 +194,10 @@ void Click_3(void)
 
   if (Mode == MODE_PW_OFF) {
     OutBattaryVoltage();
+    Mode = MODE_DO_PW_OFF;
   }
   else {
-    BlinkMode();
-    Key_Set_RELEASE();
-    LedOnSlow(Bright);
+    BlinkModeOn();
   }
 }
 
@@ -271,6 +291,13 @@ void main(void)
     KeyState = Key_State();
 
     switch (KeyState.State) {
+    case S_WAIT_10:
+      // any press turns off the beacon
+      if (BlinkState != BLINK_OFF) {
+        BlinkModeOff();
+        Key_Set_RELEASE();
+      }
+      break;
     case S_CLICK:
       switch (KeyState.Counter) {
       case 1:
@@ -316,6 +343,7 @@ void main(void)
       }
     }
 
+    BlinkMode();
     Wait30ms();
     if (Mode == MODE_DO_PW_OFF) {
       // Выключение

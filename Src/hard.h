@@ -10,6 +10,7 @@
 #define _HARD_H
 
 #include "config.h"
+#include <intrinsics.h>
 #include <ioavr.h>
 
 #if (__VER__ == 610)
@@ -57,6 +58,7 @@ typedef union {
 } UniShort;
 
 extern volatile unsigned char  MainPWM_Hi, MainPWM_Lo;
+extern volatile unsigned short BlinkTimer;
 
 void InitHard(void);
 

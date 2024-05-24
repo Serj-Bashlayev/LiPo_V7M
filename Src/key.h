@@ -21,6 +21,8 @@ typedef struct {
   unsigned char Counter;
 } KEY_STATE_TD;
 
+extern volatile unsigned short KeyTimer;
+
 #define KEY_PRESSED() ((PINB & 0x08) == 0)
 #define KEY_PRESSED_ISR  GPIOR0_Bit0
 
